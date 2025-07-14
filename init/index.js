@@ -1,23 +1,34 @@
-const mongoose=require("mongoose");
-const initData=require("./data.js");
+const mongoose = require("mongoose");
+const initData = require("./data.js");
+const Listing = require("../models/listing.js");
+require("dotenv").config();
 
-const Listing=require("../models/listing.js");
+async function main() {
+  try {
+    await mongoose.connect(process.env.ATLASDB_URL);
+    console.log("✅ Connected to MongoDB");
 
-main().then((res)=>{
-    console.log("connected to DB");
-}).catch((err)=>{
-    console.log(err);
-});
+    await initDB();
+    console.log("✅ Data was initialized");
 
-async function main(){
-    await mongoose.connect('mongodb://127.0.0.1:27017/ujjwalproject');
+    mongoose.connection.close();
+  } catch (err) {
+    console.error("❌ Error connecting or initializing DB:", err);
+    process.exit(1);
+  }
 }
 
-const initDB=async ()=>{
+const initDB = async () => {
+  try {
     await Listing.deleteMany({});
-    initData.data=initData.data.map((obj)=>({...obj,owner:'665c42af5343547912347c6d'}));
+    initData.data = initData.data.map((obj) => ({
+      ...obj,
+      owner: "665c42af5343547912347c6d", // Replace with a real ObjectId from your users collection
+    }));
     await Listing.insertMany(initData.data);
-    console.log("data was initialized");
-}
+  } catch (err) {
+    console.error("❌ Error while seeding data:", err);
+  }
+};
 
-initDB();
+main();

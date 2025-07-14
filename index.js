@@ -94,15 +94,7 @@ app.use((req,res,next)=>{
     next();
 });
 
-// app.get("/demouser",async (req,res)=>{
-//     let fakeUser=new User({
-//         email:"student@gmal.com",
-//         username:"ujjwal-gupta",
-//     });
-//                                         //  user , parrword
-//     let registerUser=await User.register(fakeUser,"helloworld");
-//     res.send(registerUser);
-// });
+
 
 app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewRouter);
@@ -120,8 +112,10 @@ app.use((err,req,res,next)=>{
     // res.status(statusCode).send(message);
 });
 
-app.listen(8080,()=>{
-     console.log("app is listening on port 8080");
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
 });
+
 
 
